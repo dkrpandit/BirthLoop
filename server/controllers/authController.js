@@ -70,12 +70,12 @@ const googleLoginSuccess = (req, res) => {
   const user = req.user
   if (user) {
     const payload = { userId: user._id.toString(), name: user.name, email: user.email, avatar: user.avatar };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     // Redirect to frontend with token
     res.redirect(
-      `${process.env.FRONTEND_URL}/auth/callback?token=${token}}`
-    );
+      `${process.env.FRONTEND_URL}/auth/callback?token=${token}`
+    );    
   } else {
     res.redirect(`${process.env.FRONTEND_URL}/login?error=auth_failed`);
   }

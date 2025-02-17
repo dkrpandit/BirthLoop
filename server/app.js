@@ -8,6 +8,7 @@ const cors = require('cors');
 require('dotenv').config();
 require('./utils/passport');
 
+const friendRoutes = require("./routes/friendRoutes")
 const app = express();
 
 // Connect to MongoDB
@@ -26,10 +27,10 @@ scheduleNotifications();
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true
-  }));
-  
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+}));
+
 // Auth Routes
 app.use('/api/auth', authRoutes);
 
@@ -37,6 +38,9 @@ app.use('/api/auth', authRoutes);
 app.get('/', (req, res) => {
   res.send('Welcome to Authentication Example');
 });
+
+// user Routes
+app.use("/api/friend",friendRoutes)
 
 // Start server
 const PORT = process.env.PORT || 3000;
