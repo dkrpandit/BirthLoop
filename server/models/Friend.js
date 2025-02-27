@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const NotificationPreferenceSchema = new mongoose.Schema({
-    days: [Number], // Array of days before birthday to notify (e.g., [1, 7, 30])
+    days: Number, // Array of days before birthday to notify (e.g., [1, 7, 30])
     time: {
         type: String,
         default: '09:00' // Default notification time
@@ -49,14 +49,6 @@ const FriendSchema = new mongoose.Schema({
         type: String,
         enum: ['family', 'friend', 'colleague', 'other'],
         default: 'friend'
-    },
-    email: {
-        type: String,
-        trim: true
-    },
-    phone: {
-        type: String,
-        trim: true
     },
     avatar: {
         type: String

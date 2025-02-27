@@ -81,18 +81,18 @@ const deleteFriend = async (req, res) => {
 const getUpcomingBirthdays = async (req, res) => {
     try {
         const days = parseInt(req.query.days) || 30;
-        console.log("Requested days:", days);
+        // console.log("Requested days:", days);
 
         if (!req.user || !req.user._id) {
             return res.status(401).json({ message: "Unauthorized: No user found" });
         }
 
-        console.log("User ID from request:", req.user._id);
+        // console.log("User ID from request:", req.user._id);
 
         const friends = await Friend.find({ userId: req.user._id });
 
         // Adding more debug logs here
-        console.log("All Friends:", friends);
+        // console.log("All Friends:", friends);
 
         const upcomingBirthdays = friends
             .map(friend => {
@@ -108,7 +108,7 @@ const getUpcomingBirthdays = async (req, res) => {
                 return dateA - dateB;
             });
 
-        console.log("Upcoming Birthdays:", upcomingBirthdays);
+        // console.log("Upcoming Birthdays:", upcomingBirthdays);
         res.json(upcomingBirthdays);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -147,4 +147,27 @@ const updateNotificationPreferences = async (req, res) => {
     }
 }
 
-module.exports = { createFriend, getAllFriends, getFriendById, updateFriend, deleteFriend, getUpcomingBirthdays, getFriendsByGroup, updateNotificationPreferences };
+const toggleNotification = async (req, res) => {
+    try {
+        const { friendId } = req.params;
+        
+        // Find the friend by ID
+        const friend = await Friend.findById(friendId);
+        if (!friend) {
+            return res.status(404).json({ message: 'Friend not found' });
+        }
+
+        // Toggle the enabled status
+        friend.notificationPreferences.enabled = !friend.notificationPreferences.enabled;
+        await friend.save();
+
+        return res.status(200).json({
+            message: 'Notification preference updated successfully',
+            enabled: friend.notificationPreferences.enabled
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    }
+};
+
+module.exports = { createFriend, getAllFriends, getFriendById, updateFriend, deleteFriend, getUpcomingBirthdays, getFriendsByGroup, updateNotificationPreferences ,toggleNotification};

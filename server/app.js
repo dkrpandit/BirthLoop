@@ -3,7 +3,8 @@ const session = require('express-session');
 const passport = require('passport');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
-const { scheduleNotifications } = require('./services/notificationService');
+const setupScheduledTasks = require('./services/scheduler');
+const notificationRoute = require('./routes/notificationRoutes')
 const cors = require('cors');
 require('dotenv').config();
 require('./utils/passport');
@@ -14,6 +15,7 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
+setupScheduledTasks();
 // Middleware
 app.use(express.json());
 app.use(
@@ -23,7 +25,6 @@ app.use(
     saveUninitialized: true,
   })
 );
-scheduleNotifications();
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors({
@@ -36,11 +37,14 @@ app.use('/api/auth', authRoutes);
 
 // Home route
 app.get('/', (req, res) => {
-  res.send('Welcome to Authentication Example');
+  res.send('Welcome to BirthLoop');
 });
 
 // user Routes
-app.use("/api/friend",friendRoutes)
+app.use("/api/friend", friendRoutes)
+
+// Notification
+app.use("/api/notification", notificationRoute)
 
 // Start server
 const PORT = process.env.PORT || 3000;
