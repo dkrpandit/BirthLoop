@@ -153,7 +153,7 @@ class NotificationController {
             let age = birthdayDate.getFullYear() - birthDate.getFullYear();
             // Compose email
             const mailOptions = {
-                from: `"BirthLoop Reminders" <${process.env.EMAIL_USER}>`,
+                from: `"BirthLoop" <${process.env.EMAIL_USER}>`,
                 to: user.email,
                 subject: `🎂 Birthday Reminder: ${friend.name}'s birthday is coming up!`,
                 html: `
