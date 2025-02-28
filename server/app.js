@@ -5,6 +5,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const setupScheduledTasks = require('./services/scheduler');
 const notificationRoute = require('./routes/notificationRoutes')
+const emailOtpRoutes = require('./routes/emailOtpRoutes');
 const cors = require('cors');
 require('dotenv').config();
 require('./utils/passport');
@@ -46,6 +47,8 @@ app.use("/api/friend", friendRoutes)
 // Notification
 app.use("/api/notification", notificationRoute)
 
-// Start server
+// Email OTP Routes
+app.use('/api/email-otp', emailOtpRoutes);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
