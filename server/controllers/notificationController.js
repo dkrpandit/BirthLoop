@@ -57,11 +57,12 @@ class NotificationController {
             const friends = await Friend.find({
                 'notificationPreferences.enabled': true
             }).populate('userId');
-
+            // console.log("friends:", friends)
             for (const friend of friends) {
                 if (!friend.userId) continue;
 
                 const user = friend.userId;
+                // console.log("user:", user)
                 const birthDate = new Date(friend.birthDate);
                 const notificationDays = friend.notificationPreferences.days || 1;
 
@@ -129,7 +130,7 @@ class NotificationController {
      */
     async sendNotification(user, friend) {
         try {
-            console.log("user:", user, "friend:", friend)
+            // console.log("user:", user, "friend:", friend)
             // Calculate the birthday date
             const today = new Date();
             const birthDate = new Date(friend.birthDate);
@@ -185,8 +186,7 @@ class NotificationController {
 
             // Send email
             const info = await this.transporter.sendMail(mailOptions);
-            console.log(`Birthday notification sent for ${friend.name} to ${user.email}: ${info.messageId}`);
-
+            // console.log(`Birthday notification sent for ${friend.name} to ${user.email}: ${info.messageId}`);
             // Update the lastNotificationSent date
             await Friend.findByIdAndUpdate(friend._id, {
                 lastNotificationSent: new Date()

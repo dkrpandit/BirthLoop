@@ -28,15 +28,27 @@ const setupScheduledTasks = () => {
   //   }
   // });
 
-  cron.schedule('* * * * *', async () => {
-    console.log('Every minute notification check...');
+  // Every minute notification check
+  // cron.schedule('* * * * *', async () => {
+  //   console.log('Every minute notification check...');
+  //   try {
+  //     const result = await notificationController.processDailyNotifications();
+  //     console.log('completed notification check :', result);
+  //   } catch (error) {
+  //     console.error('Error Every minute notification check:', error);
+  //   }
+  // });
+
+  cron.schedule('0 * * * *', async () => {
+    console.log('Every 1 hour notification check...');
     try {
       const result = await notificationController.processDailyNotifications();
-      console.log('completed notification check :', result);
+      console.log('Completed notification check:', result);
     } catch (error) {
-      console.error('Error Every minute notification check:', error);
+      console.error('Error in hourly notification check:', error);
     }
   });
+  
   console.log('Scheduled tasks have been set up');
 };
 
