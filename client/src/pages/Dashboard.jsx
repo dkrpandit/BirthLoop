@@ -23,7 +23,7 @@ const Dashboard = () => {
   }, []);
 
   const fetchMembers = async () => {
-    console.log("serverUrl",serverUrl) 
+    // console.log("serverUrl",serverUrl) 
     try {
       const response = await fetch(`${serverUrl}/api/friend`, {
         headers: {
