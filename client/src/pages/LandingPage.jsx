@@ -22,13 +22,13 @@ const LandingPage = () => {
 
                         {/* Desktop Navigation */}
                         <div className="hidden md:flex items-center space-x-6">
-                            <a
+                            {/* <a
                                 href="#features"
                                 className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium flex items-center gap-1 transition"
                             >
                                 <Bell className="w-4 h-4" />
                                 Features
-                            </a>
+                            </a> */}
                             <a
                                 href="#how-it-works"
                                 className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium flex items-center gap-1 transition"
@@ -37,12 +37,7 @@ const LandingPage = () => {
                                 How it Works
                             </a>
                             <div className="h-6 w-px bg-gray-200"></div>
-                            <Link
-                                to="/login"
-                                className="text-indigo-600 hover:text-indigo-800 px-3 py-2 rounded-md text-sm font-medium transition"
-                            >
-                                Login
-                            </Link>
+                      
                         </div>
 
                         {/* Mobile menu button */}
@@ -65,13 +60,13 @@ const LandingPage = () => {
                 {isMenuOpen && (
                     <div className="md:hidden bg-white border-t border-gray-100">
                         <div className="px-4 pt-2 pb-3 space-y-2">
-                            <a
+                            {/* <a
                                 href="#features"
                                 className="flex items-center gap-2 px-3 py-2 rounded-lg text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 transition"
                             >
                                 <Bell className="w-5 h-5" />
                                 Features
-                            </a>
+                            </a> */}
                             <a
                                 href="#how-it-works"
                                 className="flex items-center gap-2 px-3 py-2 rounded-lg text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 transition"
@@ -103,23 +98,18 @@ const LandingPage = () => {
                         </p>
                         <div className="flex justify-center gap-4">
                             <Link
-                                to="/signup"
+                                to="/login"
                                 className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-500 transition"
                             >
                                 Get Started Free
                             </Link>
-                            <Link
-                                to="/demo"
-                                className="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold border border-indigo-200 hover:border-indigo-300 transition"
-                            >
-                                Try Demo
-                            </Link>
+                           
                         </div>
                     </div>
                 </div>
 
                 {/* Features Section */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" id='features'>
+                {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" id='features'>
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         <div className="bg-white p-6 rounded-xl shadow-sm">
                             <Bell className="w-12 h-12 text-indigo-600 mb-4" />
@@ -153,7 +143,7 @@ const LandingPage = () => {
                             </p>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 {/* How It Works Section */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" id='how-it-works'>

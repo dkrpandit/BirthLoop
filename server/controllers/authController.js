@@ -27,7 +27,7 @@ const signup = async (req, res) => {
     await user.save();
 
     // Generate JWT
-    const payload = { userId: user.id };
+    const payload = { userId: user.id , name: user.name, email: user.email };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.status(201).json({ token });
@@ -55,8 +55,8 @@ const login = async (req, res) => {
     }
 
     // Generate JWT
-    const payload = { userId: user.id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const payload = { userId: user.id ,email: user.email, name: user.name};
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     res.status(200).json({ token });
   } catch (err) {

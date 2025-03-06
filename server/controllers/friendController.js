@@ -5,7 +5,7 @@ const createFriend = async (req, res) => {
     try {
         const friendData = {
             ...req.body,
-            userId: req.user._id // Assuming you have user data from auth middleware
+            userId: req.user._id
         };
         const friend = new Friend(friendData);
         await friend.save();

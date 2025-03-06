@@ -2,21 +2,21 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import './App.css';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-// import Navbar from './components/Navbar';
-import Dashboard from './pages/Dashboard'; // You'll need to create this component
-// import AuthCallback from './pages/AuthCallback';
+import Dashboard from './pages/Dashboard';
 import GoogleAuthButton from './components/GoogleAuthButton';
-import LandingPage  from './pages/LandingPage';
-import DemoPage from './pages/DemoPage';
+import LandingPage from './pages/LandingPage';
 
-// Protected Route component to handle authentication
-// const ProtectedRoute = ({ children }) => { 
-//   const token = localStorage.getItem('token');
-//   if (!token) {
-//     return <Navigate to="/login" replace />;
-//   }
-//   return children;
-// };
+// Protected Route for authenticated users
+const ProtectedRoute = ({ children }) => { 
+  const token = localStorage.getItem('token');
+  return token ? children : <Navigate to="/" replace />;
+};
+
+// Redirect users to dashboard if already logged in
+const RedirectIfAuthenticated = ({ children }) => {
+  const token = localStorage.getItem('token');
+  return token ? <Navigate to="/dashboard" replace /> : children;
+};
 
 function App() {
   return (
@@ -25,21 +25,35 @@ function App() {
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          {/* <Route path="/auth/callback" element={<AuthCallback />} */}
-        <Route path="/auth/callback" element={<GoogleAuthButton />} />
-          {/* Protected routes */}
+          <Route 
+            path="/login" 
+            element={
+              <RedirectIfAuthenticated>
+                <Login />
+              </RedirectIfAuthenticated>
+            } 
+          />
+          <Route 
+            path="/signup" 
+            element={
+              <RedirectIfAuthenticated>
+                <Signup />
+              </RedirectIfAuthenticated>
+            } 
+          />
+          <Route path="/auth/callback" element={<GoogleAuthButton />} />
+
+          {/* Protected route */}
           <Route
             path="/dashboard"
             element={
-              // <ProtectedRoute>
-              <Dashboard />
-              // </ProtectedRoute>
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
             }
           />
-          <Route path="/demo" element={<DemoPage />} />
-          {/* Catch all route - 404 */}
+
+          {/* Catch-all route */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

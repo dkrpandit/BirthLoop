@@ -64,7 +64,7 @@ class NotificationController {
                 const user = friend.userId;
                 // console.log("user:", user)
                 const birthDate = new Date(friend.birthDate);
-                const notificationDays = friend.notificationPreferences.days || 1;
+                const notificationDays = friend.notificationPreferences.days || 0;
 
                 // Check if notification should be sent today
                 if (this.shouldSendNotificationToday(birthDate, notificationDays, today)) {
