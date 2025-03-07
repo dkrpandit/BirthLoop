@@ -180,7 +180,7 @@ class NotificationController {
             ${friend.notes ? `<p style="font-size: 16px; color: #333;"><strong>Your notes:</strong> ${friend.notes}</p>` : ''}
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${process.env.APP_URL || 'https://birthloop.com'}" style="background-color: #4a90e2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Open BirthLoop</a>
+              <a href="https://birthloop.netlify.app" style="background-color: #4a90e2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Open BirthLoop</a>
             </div>
             
             <p style="font-size: 14px; color: #888; text-align: center; margin-top: 30px;">
