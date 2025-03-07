@@ -1,64 +1,105 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Dashboard from './pages/Dashboard';
-import GoogleAuthButton from './components/GoogleAuthButton';
-import LandingPage from './pages/LandingPage';
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import "./App.css";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
+import ForgotPassword from "./pages/ForgotPassword";
+import GoogleAuthButton from "./components/GoogleAuthButton";
+import LandingPage from "./pages/LandingPage";
 
-// Protected Route for authenticated users
-const ProtectedRoute = ({ children }) => { 
-  const token = localStorage.getItem('token');
-  return token ? children : <Navigate to="/" replace />;
+// Check if token is valid (not expired)
+const isTokenValid = (token) => {
+  if (!token) return false;
+  
+  try {
+    // Decode JWT token
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp > Date.now() / 1000;
+  } catch (error) {
+    console.error("Error validating token:", error);
+    return false;
+  }
 };
 
-// Redirect users to dashboard if already logged in
+// Protected Route Wrapper
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem("authToken");
+
+  if (token && isTokenValid(token)) {
+    return children;
+  } else {
+    localStorage.removeItem("authToken");
+    return <Navigate to="/login" replace />;
+  }
+};
+
+// Redirect if already authenticated
 const RedirectIfAuthenticated = ({ children }) => {
-  const token = localStorage.getItem('token');
-  return token ? <Navigate to="/dashboard" replace /> : children;
+  const token = localStorage.getItem("authToken");
+
+  if (token && isTokenValid(token)) {
+    return <Navigate to="/dashboard" replace />;
+  } else {
+    if (token) localStorage.removeItem("authToken");
+    return children;
+  }
 };
 
-function App() {
-  return (
-    <Router>
-      <div className="min-h-screen flex flex-col">
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<LandingPage />} />
-          <Route 
-            path="/login" 
-            element={
-              <RedirectIfAuthenticated>
-                <Login />
-              </RedirectIfAuthenticated>
-            } 
-          />
-          <Route 
-            path="/signup" 
-            element={
-              <RedirectIfAuthenticated>
-                <Signup />
-              </RedirectIfAuthenticated>
-            } 
-          />
-          <Route path="/auth/callback" element={<GoogleAuthButton />} />
+const App = () => {
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
-          {/* Protected route */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token && !isTokenValid(token)) {
+      localStorage.removeItem("authToken");
+    }
+    setIsCheckingAuth(false);
+  }, []);
 
-          {/* Catch-all route */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
-    </Router>
-  );
-}
+  if (isCheckingAuth) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  const router = createBrowserRouter([
+    { path: "/", element: <LandingPage /> },
+    {
+      path: "/login",
+      element: (
+        <RedirectIfAuthenticated>
+          <Login />
+        </RedirectIfAuthenticated>
+      ),
+    },
+    {
+      path: "/signup",
+      element: (
+        <RedirectIfAuthenticated>
+          <Signup />
+        </RedirectIfAuthenticated>
+      ),
+    },
+    {
+      path: "/forgot-password",
+      element: (
+        <RedirectIfAuthenticated>
+          <ForgotPassword />
+        </RedirectIfAuthenticated>
+      ),
+    },
+    { path: "/auth/callback", element: <GoogleAuthButton /> },
+    {
+      path: "/dashboard",
+      element: (
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      ),
+    },
+    { path: "*", element: <Navigate to="/" replace /> },
+  ]);
+
+  return <RouterProvider router={router} />;
+};
 
 export default App;

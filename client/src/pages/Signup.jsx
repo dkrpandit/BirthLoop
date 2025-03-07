@@ -19,6 +19,9 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
 
+  // Server URL configuration
+  const serverUrl = 'http://localhost:3000';
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -34,11 +37,27 @@ const Signup = () => {
 
     try {
       setIsLoading(true);
-      // Here you would make an API call to send OTP
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulating API call
+      
+      // Using the real send-otp API
+      const response = await fetch(`${serverUrl}/api/email-otp/send-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to send verification code');
+      }
+
       setStep(2);
     } catch (err) {
-      setError('Failed to send verification code');
+      setError(err.message || 'Failed to send verification code');
     } finally {
       setIsLoading(false);
     }
@@ -53,12 +72,29 @@ const Signup = () => {
 
     try {
       setIsLoading(true);
-      // Here you would verify the OTP
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulating API call
+      
+      // Using the real verify-otp API
+      const response = await fetch(`${serverUrl}/api/email-otp/verify-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          otp: formData.otp
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Invalid verification code');
+      }
+
       setEmailVerified(true);
       setStep(3);
     } catch (err) {
-      setError('Invalid verification code');
+      setError(err.message || 'Invalid verification code');
     } finally {
       setIsLoading(false);
     }
@@ -85,7 +121,9 @@ const Signup = () => {
 
     try {
       setIsLoading(true);
-      const response = await fetch('/api/signup', {
+      
+      // Using the real signup API
+      const response = await fetch(`${serverUrl}/api/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +141,12 @@ const Signup = () => {
         throw new Error(data.message || 'Signup failed');
       }
 
-      localStorage.setItem('token', data.token);
+      // Store the token if returned by the API
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+      
+      // Navigate to dashboard after successful signup
       navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Something went wrong');

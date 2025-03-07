@@ -21,7 +21,7 @@ const Navbar = () => {
         const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decode JWT payload
         setUser({
           name: decodedToken.name || 'User',
-          profileImage: decodedToken.avatar || 'default-avatar-url'
+          profileImage: decodedToken.avatar || 'https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg?semt=ais_hybrid'
         });
       } catch (error) {
         console.error('Invalid token:', error);

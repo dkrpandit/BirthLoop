@@ -1,24 +1,57 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, Gift } from 'lucide-react';
 import GoogleAuthButton from '../components/GoogleAuthButton';
+
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const serverUrl = 'http://localhost:3000';
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
+    
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log('Login submitted:', formData);
+      const response = await fetch(`${serverUrl}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to login');
+      }
+      
+      // Handle successful login
+      console.log('Login successful:', data);
+      
+      // You might want to store the token in localStorage/sessionStorage
+      if (data.token) {
+        localStorage.setItem('authToken', data.token);
+      }
+      
+      // Redirect to dashboard or home page
+      window.location.href = '/dashboard';
+      
     } catch (error) {
       console.error('Login error:', error);
+      setError(error.message || 'An error occurred during login');
     } finally {
       setIsLoading(false);
     }
@@ -33,6 +66,12 @@ const Login = () => {
             <h1 className="text-4xl font-extrabold text-gray-900 mb-2">BirthLoop</h1>
             <p className="text-gray-600">Celebrate life's special moments</p>
           </div>
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -77,7 +116,7 @@ const Login = () => {
             </div>
 
             <div className="text-right">
-              <button type="button" className="text-sm text-indigo-600 hover:underline">Forgot password?</button>
+              <a href="/forgot-password" className="text-sm text-indigo-600 hover:underline">Forgot password?</a>
             </div>
 
             <button

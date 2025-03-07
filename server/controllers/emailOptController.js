@@ -142,6 +142,62 @@ const sendOtp = async (req, res) => {
         });
     }
 };
+/**
+ * Controller to send OTP to user's email for forgot password
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+const sendOtpForForgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        
+        // Validate email
+        if (!email || !email.includes('@')) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide a valid email address"
+            });
+        }
+
+        // Check if email exists in User model
+        const existingUser = await User.findOne({ email });
+        if (!existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: "Email not found"
+            });
+        }
+
+        // Generate a 6-digit OTP
+        const otp = generateOTP();
+
+        // First delete any existing OTPs for this email
+        await EmailOTP.deleteMany({ email });
+
+        // Store new OTP in database
+        await EmailOTP.create({
+            email,
+            otp
+            // createdAt and expires is handled by the schema default
+        });
+
+        // Send OTP via email
+        await sendOTPEmail(email, otp);
+
+        res.status(200).json({
+            success: true,
+            message: "OTP sent successfully",
+            otp
+        });
+
+    } catch (error) {
+        console.error("Error in sending OTP:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to send OTP. Please try again later."
+        });
+    }
+};
 
 /**
  * Controller to verify OTP submitted by user
@@ -190,5 +246,6 @@ const verifyOtp = async (req, res) => {
 
 module.exports = {
     sendOtp,
-    verifyOtp
+    verifyOtp,
+    sendOtpForForgotPassword
 };
