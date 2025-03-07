@@ -7,7 +7,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const serverUrl = 'http://localhost:3000';
+  const serverUrl = import.meta.env.VITE_SERVER_URL;
 
   const handleChange = (e) => {
     const { name, value } = e.target;

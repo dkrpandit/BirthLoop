@@ -12,7 +12,7 @@ const ForgotPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const serverUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const serverUrl = import.meta.env.VITE_SERVER_URL;
 
   const handleSendOtp = async (e) => {
     e.preventDefault();

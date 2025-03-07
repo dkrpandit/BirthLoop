@@ -20,7 +20,7 @@ const Signup = () => {
   const [emailVerified, setEmailVerified] = useState(false);
 
   // Server URL configuration
-  const serverUrl = 'http://localhost:3000';
+  const serverUrl = import.meta.env.VITE_SERVER_URL;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
