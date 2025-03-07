@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, Gift } from 'lucide-react';
 import GoogleAuthButton from '../components/GoogleAuthButton';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -8,7 +9,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const serverUrl = import.meta.env.VITE_SERVER_URL;
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -31,24 +32,18 @@ const Login = () => {
           password: formData.password
         }),
       });
-      
       const data = await response.json();
       
       if (!response.ok) {
         throw new Error(data.message || 'Failed to login');
       }
       
-      // Handle successful login
-      console.log('Login successful:', data);
-      
       // You might want to store the token in localStorage/sessionStorage
       if (data.token) {
         localStorage.setItem('authToken', data.token);
       }
       
-      // Redirect to dashboard or home page
-      window.location.href = '/dashboard';
-      
+      navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
       setError(error.message || 'An error occurred during login');
