@@ -24,7 +24,7 @@ const isTokenValid = (token) => {
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("token");
 
   if (token && isTokenValid(token)) {
     return children;
@@ -36,12 +36,12 @@ const ProtectedRoute = ({ children }) => {
 
 // Redirect if already authenticated
 const RedirectIfAuthenticated = ({ children }) => {
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("token");
 
   if (token && isTokenValid(token)) {
     return <Navigate to="/dashboard" replace />;
   } else {
-    if (token) localStorage.removeItem("authToken");
+    if (token) localStorage.removeItem("token");
     return children;
   }
 };
@@ -50,9 +50,9 @@ const App = () => {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("token");
     if (token && !isTokenValid(token)) {
-      localStorage.removeItem("authToken");
+      localStorage.removeItem("token");
     }
     setIsCheckingAuth(false);
   }, []);
