@@ -64,8 +64,8 @@ class NotificationController {
                 const user = friend.userId;
                 // console.log("user:", user)
                 const birthDate = new Date(friend.birthDate);
-                const notificationDays = friend.notificationPreferences.days || 0;
-
+                const notificationDays = friend.notificationPreferences.days;
+                // console.log("birthDate:", birthDate, "notificationDays:", notificationDays)
                 // Check if notification should be sent today
                 if (this.shouldSendNotificationToday(birthDate, notificationDays, today)) {
                     // Check if notification was already sent today
@@ -98,16 +98,24 @@ class NotificationController {
         // Get current year's birthday
         const currentYearBday = new Date(birthDate);
         currentYearBday.setFullYear(today.getFullYear());
-
+    
+        // Check if today is the birthday (for notificationDays = 0)
+        if (notificationDays === 0) {
+            return (
+                currentYearBday.getDate() === today.getDate() && 
+                currentYearBday.getMonth() === today.getMonth()
+            );
+        }
+    
         // If birthday has already passed this year, look at next year's birthday
         if (currentYearBday < today) {
             currentYearBday.setFullYear(today.getFullYear() + 1);
         }
-
+    
         // Calculate days difference
         const diffTime = currentYearBday.getTime() - today.getTime();
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
+    
         // Should send notification if days difference matches notification preference
         return diffDays === notificationDays;
     }
