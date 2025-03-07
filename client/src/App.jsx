@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ForgotPassword from "./pages/ForgotPassword";
-import GoogleAuthButton from "./components/GoogleAuthButton";
+import GoogleAuthCallback from "./components/GoogleAuthButton";
 import LandingPage from "./pages/LandingPage";
 
 // Check if token is valid (not expired)
@@ -87,7 +87,10 @@ const App = () => {
         </RedirectIfAuthenticated>
       ),
     },
-    { path: "/auth/callback", element: <GoogleAuthButton /> },
+    { 
+      path: "/auth/callback", 
+      element: <GoogleAuthCallback /> 
+    },
     {
       path: "/dashboard",
       element: (
