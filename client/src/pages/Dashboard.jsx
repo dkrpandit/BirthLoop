@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Filter, UserPlus, Edit2, Trash2, BellOff, Bell ,Gift} from 'lucide-react';
+import { Filter, UserPlus, Edit2, Trash2, BellOff, Bell, Gift, Calendar } from 'lucide-react';
 import Navbar from '../components/Navbar';
 const serverUrl = import.meta.env.VITE_SERVER_URL;
+
 const Dashboard = () => {
   const [members, setMembers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +24,6 @@ const Dashboard = () => {
   }, []);
 
   const fetchMembers = async () => {
-    // console.log("serverUrl",serverUrl) 
     try {
       const response = await fetch(`${serverUrl}/api/friend`, {
         headers: {
@@ -49,7 +49,6 @@ const Dashboard = () => {
       });
 
       if (response.ok) {
-        // Update the local state to reflect the change
         setMembers(members.map(member => {
           if (member._id === friendId) {
             return {
@@ -157,6 +156,19 @@ const Dashboard = () => {
     return `${days} day${days > 0 ? 's' : ''} before at ${time}`;
   };
 
+  const getRelationshipColor = (relationship) => {
+    switch (relationship) {
+      case 'family':
+        return 'bg-purple-100 text-purple-800';
+      case 'friend':
+        return 'bg-blue-100 text-blue-800';
+      case 'colleague':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   const filteredMembers = activeFilter === 'all' 
     ? members 
     : members.filter(member => member.relationship === activeFilter);
@@ -169,18 +181,6 @@ const Dashboard = () => {
       <Navbar />      
       <div className="p-4 md:p-6 max-w-6xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg">
-          {/* <div className="border-b p-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center">
-              <Gift className="h-8 w-8 text-indigo-600" />
-              <span className="ml-2 text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-transparent bg-clip-text">
-                BirthLoop
-              </span>
-          </div>
-              <div className="text-sm text-gray-500">Managing {members.length} birthdays</div>
-            </div>
-          </div> */}
-
           <div className="p-4 md:p-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
               <div className="w-full sm:w-auto">
@@ -215,70 +215,70 @@ const Dashboard = () => {
               </button>
             </div>
 
-            <div className="overflow-x-auto bg-white rounded-lg shadow">
-              {filteredMembers.length > 0 ? (
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b bg-gray-50">
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Name</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Birthday</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600 hidden md:table-cell">Relationship</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600 hidden lg:table-cell">Notification</th>
-                      <th className="text-center py-3 px-4 font-medium text-gray-600">Status</th>
-                      <th className="text-center py-3 px-4 font-medium text-gray-600">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredMembers.map((member) => (
-                      <tr key={member._id} className="border-b last:border-b-0 hover:bg-gray-50">
-                        <td className="py-3 px-4 font-medium">{member.name}</td>
-                        <td className="py-3 px-4">{formatDate(member.birthDate)}</td>
-                        <td className="py-3 px-4 hidden md:table-cell">
-                          <span className="capitalize">{member.relationship}</span>
-                        </td>
-                        <td className="py-3 px-4 hidden lg:table-cell">{getNotificationTiming(member)}</td>
-                        <td className="py-3 px-4 text-center">
-                          <div 
-                            onClick={() => handleToggleNotification(member._id, member.notificationPreferences?.enabled)}
-                            className="inline-flex items-center cursor-pointer"
+            {filteredMembers.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredMembers.map((member) => (
+                  <div key={member._id} className="bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                    <div className="p-4">
+                      <div className="flex justify-between items-start mb-3">
+                        <h3 className="font-semibold text-lg">{member.name}</h3>
+                        <div 
+                          onClick={() => handleToggleNotification(member._id, member.notificationPreferences?.enabled)}
+                          className="cursor-pointer"
+                        >
+                          {member.notificationPreferences?.enabled ? (
+                            <Bell size={18} className="text-green-500" />
+                          ) : (
+                            <BellOff size={18} className="text-gray-400" />
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-center gap-2">
+                          <Calendar size={16} className="text-gray-500" />
+                          <span className="text-sm text-gray-600">{formatDate(member.birthDate)}</span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <Gift size={16} className="text-gray-500" />
+                          <span className="text-sm text-gray-600">{getNotificationTiming(member)}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between items-center">
+                        <span className={`px-3 py-1 rounded-full text-xs capitalize ${getRelationshipColor(member.relationship)}`}>
+                          {member.relationship}
+                        </span>
+                        
+                        <div className="flex items-center space-x-2">
+                          <button 
+                            onClick={() => handleEdit(member)}
+                            className="p-1.5 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 transition-colors"
+                            aria-label="Edit member"
                           >
-                            {member.notificationPreferences?.enabled ? (
-                              <Bell size={18} className="text-green-500" />
-                            ) : (
-                              <BellOff size={18} className="text-gray-400" />
-                            )}
-                          </div>
-                        </td>
-                        <td className="py-3 px-4">
-                          <div className="flex items-center justify-center space-x-3">
-                            <button 
-                              onClick={() => handleEdit(member)}
-                              className="text-blue-600 hover:text-blue-800 transition-colors"
-                              aria-label="Edit member"
-                            >
-                              <Edit2 size={18} />
-                            </button>
-                            <button 
-                              onClick={() => handleDelete(member._id)}
-                              className="text-red-500 hover:text-red-700 transition-colors"
-                              aria-label="Delete member"
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <div className="p-8 text-center text-gray-500">
-                  {activeFilter === 'all' 
-                    ? "No members found. Add your first member to get started!" 
-                    : `No ${activeFilter} members found. Try a different filter or add a new ${activeFilter}.`}
-                </div>
-              )}
-            </div>
+                            <Edit2 size={16} />
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(member._id)}
+                            className="p-1.5 bg-red-50 text-red-500 rounded-full hover:bg-red-100 transition-colors"
+                            aria-label="Delete member"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 text-center text-gray-500 bg-gray-50 rounded-lg">
+                {activeFilter === 'all' 
+                  ? "No members found. Add your first member to get started!" 
+                  : `No ${activeFilter} members found. Try a different filter or add a new ${activeFilter}.`}
+              </div>
+            )}
           </div>
         </div>
       </div>

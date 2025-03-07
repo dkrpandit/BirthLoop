@@ -1,9 +1,9 @@
 import { Bell, Gift, Calendar, Users, ChevronRight, Menu, X, } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-const serverUrl = import.meta.env.VITE_SERVER_URL;
+// const serverUrl = import.meta.env.VITE_SERVER_URL;
 const LandingPage = () => {
-    console.log(serverUrl)
+    // console.log(serverUrl)
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     return (
         <>
