@@ -20,7 +20,7 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    
+
     try {
       const response = await fetch(`${serverUrl}/api/auth/login`, {
         method: 'POST',
@@ -33,16 +33,15 @@ const Login = () => {
         }),
       });
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Failed to login');
       }
-      
-      // You might want to store the token in localStorage/sessionStorage
+      // Store the token if returned by the API
       if (data.token) {
-        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('token', data.token);
       }
-      
+      // Navigate to dashboard after successful signup
       navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
@@ -122,7 +121,7 @@ const Login = () => {
               {isLoading ? 'Loading...' : 'Sign in'}
             </button>
 
-            <GoogleAuthButton onAuthSuccess={(user) => console.log('Logged in with Google:', user)}/>
+            <GoogleAuthButton onAuthSuccess={(user) => console.log('Logged in with Google:', user)} />
 
             <div className="text-center text-sm text-gray-600">
               Don't have an account? <a href="/signup" className="font-semibold text-indigo-600 hover:underline">Sign up</a>
