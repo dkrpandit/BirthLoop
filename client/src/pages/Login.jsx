@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, Gift } from 'lucide-react';
 import GoogleAuthButton from '../components/GoogleAuthButton';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -124,7 +124,7 @@ const Login = () => {
             <GoogleAuthButton onAuthSuccess={(user) => console.log('Logged in with Google:', user)} />
 
             <div className="text-center text-sm text-gray-600">
-              Don't have an account? <a href="/signup" className="font-semibold text-indigo-600 hover:underline">Sign up</a>
+              Don't have an account? <Link to="/signup" className="font-semibold text-indigo-600 hover:underline">Sign up</a>
             </div>
           </form>
         </div>
