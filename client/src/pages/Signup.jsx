@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Mail, Lock, User, Eye, EyeOff, Gift, CheckCircle, Loader } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import GoogleAuthButton from '../components/GoogleAuthButton';
 
 const Signup = () => {
@@ -353,7 +353,7 @@ const Signup = () => {
 
             <div className="text-center text-sm text-gray-600 mt-6">
               Already have an account?{' '}
-              <a href="/login" className="font-semibold text-indigo-600 hover:text-indigo-500">
+              <Link to="/login" className="font-semibold text-indigo-600 hover:text-indigo-500">
                 Log in
               </a>
             </div>
